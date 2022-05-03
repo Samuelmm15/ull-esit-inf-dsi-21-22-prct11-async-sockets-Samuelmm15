@@ -118,6 +118,17 @@ const server = net.createServer((connection) => {
                 });
                 break;
             case 'remove':
+                fs.unlink(`src/notes/${message.user}/${message.title}.json`, (err) => {
+                    if (err) {
+                        console.log(chalk.red('There must be a problem to remove'));
+                        const response: ResponseType = {type: 'read', success: false};
+                        connection.write(JSON.stringify(response));
+                    } else {
+                        console.log(chalk.green('The note was succefully removed'));
+                        const response: ResponseType = {type: 'read', success: true};
+                        connection.write(JSON.stringify(response));
+                    }
+                });
                 break;
             case 'modify':
                 break;

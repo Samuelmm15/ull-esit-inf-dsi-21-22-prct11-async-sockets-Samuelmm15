@@ -189,7 +189,14 @@ switch (process.argv[2]) {
                 if ((typeof argv.user === 'string') && (typeof argv.title === 'string')) {
                     const message: RequestType = {type: 'remove', user: argv.user, title: argv.title};
                     clientConnection.write(JSON.stringify(message));
-                    clientConnection.end();
+                    clientConnection.on('data', (data) => {
+                        const dataRecieved = JSON.parse(data.toString());
+                        if (dataRecieved.success === true) {
+                            console.log(chalk.green('The file was succefully removed'));
+                        } else {
+                            console.log(chalk.red('The file does not exists'));
+                        }
+                    });
                 }
             },
         });
