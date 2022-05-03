@@ -227,7 +227,14 @@ switch (process.argv[2]) {
                 if ((typeof argv.user === 'string') && (typeof argv.title === 'string') && (typeof argv.body === 'string')) {
                     const message: RequestType = {type: 'modify', user: argv.user, title: argv.title, body: argv.body};
                     clientConnection.write(JSON.stringify(message));
-                    clientConnection.end();
+                    clientConnection.on('data', (data) => {
+                        const dataRecieved = JSON.parse(data.toString());
+                        if (dataRecieved.success === true) {
+                            console.log(chalk.green('The File was succefully modificated'));
+                        } else {
+                            console.log(chalk.red('The introduced File does no exists'));
+                        }
+                    });
                 }
             },
         });

@@ -131,6 +131,40 @@ const server = net.createServer((connection) => {
                 });
                 break;
             case 'modify':
+                let flag: number = 1;
+                fs.readdir(`src/notes/${message.user}`, (err, data) => {
+                    if (err) {
+                        console.log(chalk.red('There must be a problem'));
+                    } else {
+                        data.forEach((item) => {
+                            if (item === `${message.title}.json`) {
+                                flag = 0;
+                                fs.readFile(`src/notes/${message.user}/${message.title}.json`, (err, readData) => {
+                                    if (err) {
+                                        console.log(chalk.red('There must be a problem to read'));
+                                    } else {
+                                        const object = JSON.parse(readData.toString());
+                                        object.body = `${message.body}`;
+                                        fs.writeFile(`src/notes/${message.user}/${message.title}.json`, JSON.stringify(object), (err) => {
+                                            if (err) {
+                                                console.log(chalk.red('There must be a problem to write the file'));
+                                            } else {
+                                                console.log(chalk.green('The file was succesfully Modificated'));
+                                                const response: ResponseType = {type: 'modify', success: true};
+                                                connection.write(JSON.stringify(response));
+                                            }
+                                        });
+                                    }
+                                });
+                            }
+                        });
+                        if (flag === 1) {
+                            console.log(chalk.red('The file does not exists'));
+                            const response: ResponseType = {type: 'modify', success: false};
+                            connection.write(JSON.stringify(response));
+                        }
+                    }
+                });
                 break;
             case 'addUser':
                 break;
