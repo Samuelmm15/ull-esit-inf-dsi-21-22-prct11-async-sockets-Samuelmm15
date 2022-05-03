@@ -1,3 +1,4 @@
+/* eslint-disable prefer-const */
 /* eslint-disable indent */
 /**
  * El cliente sólo pordrá interactuar con el servidor a través de la línea de comandos.
@@ -90,6 +91,31 @@ const server = net.createServer((connection) => {
                 });
                 break;
             case 'read':
+                fs.readdir(`src/notes/${message.user}`, (err, data) => {
+                    let flag: number = 1;
+                    data.forEach((item) => {
+                        if (item === `${message.title}.json`) {
+                            flag = 0;
+                            fs.readFile(`src/notes/${message.user}/${message.title}.json`, (err, readData) => {
+                                if (err) {
+                                    console.log(chalk.red('There must be a problem to read'));
+                                } else {
+                                    const object = JSON.parse(readData.toString());
+                                    const noteObject = new Note(object.title, object.body, object.colour, message.user);
+                                    const noteCollection: Note[] = [];
+                                    noteCollection.push(noteObject);
+                                    const response: ResponseType = {type: 'read', success: true, notes: noteCollection};
+                                    connection.write(JSON.stringify(response));
+                                }
+                            });
+                        }
+                    });
+                    if (flag === 1) {
+                        console.log(chalk.red('The file that was trying to read does not exists'));
+                        const response: ResponseType = {type: 'read', success: false};
+                        connection.write(JSON.stringify(response));
+                    }
+                });
                 break;
             case 'remove':
                 break;

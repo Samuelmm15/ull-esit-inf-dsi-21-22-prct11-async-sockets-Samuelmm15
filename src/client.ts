@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable indent */
 /**
  * TENER EN CUENTA QUE PUEDE QUE LA INFORMACIÓN RECIBIDA SEA EN CACHOS
@@ -134,7 +135,35 @@ switch (process.argv[2]) {
                 if ((typeof argv.user === 'string') && (typeof argv.title === 'string')) {
                     const message: RequestType = {type: 'read', user: argv.user, title: argv.title};
                     clientConnection.write(JSON.stringify(message));
-                    clientConnection.end();
+                    clientConnection.on('data', (data) => {
+                        const dataRecieved = JSON.parse(data.toString());
+                        if (dataRecieved.success === true) {
+                            console.log(chalk.green('The specified file was succefully readed'));
+                            console.log();
+                            for (let i = 0; i < dataRecieved.notes.length; i++) {
+                                switch (dataRecieved.notes[i].colour) {
+                                    case 'red':
+                                        console.log(`${dataRecieved.notes[i].title}:`);
+                                        console.log(chalk.red(dataRecieved.notes[i].body));
+                                    break;
+                                    case 'green':
+                                        console.log(`${dataRecieved.notes[i].title}:`);
+                                        console.log(chalk.green(dataRecieved.notes[i].body));
+                                    break;
+                                    case 'blue':
+                                        console.log(`${dataRecieved.notes[i].title}:`);
+                                        console.log(chalk.blue(dataRecieved.notes[i].body));
+                                    break;
+                                    case 'yellow':
+                                        console.log(`${dataRecieved.notes[i].title}:`);
+                                        console.log(chalk.yellow(dataRecieved.notes[i].body));
+                                    break;
+                                }
+                            }
+                        } else {
+                            console.log(chalk.red('There was a problem to read the specified file'));
+                        }
+                    });
                 }
             },
         });
