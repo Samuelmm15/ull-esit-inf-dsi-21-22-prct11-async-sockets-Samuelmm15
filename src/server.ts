@@ -28,17 +28,8 @@ type ResponseType = {
 
 const server = net.createServer((connection) => {
     console.log('A client has connected');
-
-    let wholeData = '';
     connection.on('data', (data) => {
-        wholeData += data;
-        console.log(wholeData);
-    });
-
-    connection.on('finish', () => {
-        console.log('accede');
-        const message = JSON.parse(wholeData);
-        console.log(message);
+        const message = JSON.parse(data.toString());
         switch (message.type) {
             case 'add':
                 const object = new Note(message.title, message.body, message.colour, message.user);
@@ -186,31 +177,30 @@ const server = net.createServer((connection) => {
                 break;
             case 'addUser':
                     fs.readdir(`src/notes`, (err, data) => {
-                        if (err) {
-                            console.log(chalk.red('There must be a problem'));
-                        } else {
-                            data.forEach((item) => {
-                                if (item === message.user) {
-                                    console.log(chalk.red('The user that is going to add already exists'));
-                                    const response: ResponseType = {type: 'addUser', success: false};
-                                    connection.write(JSON.stringify(response));
-                                    connection.end();
-                                } else {
-                                    fs.mkdir(`src/notes/${message.user}`, (err) => {
-                                        if (err) {
-                                            console.log(chalk.red('There must be a problem to create the user'));
-                                        } else {
-                                            console.log(chalk.green('The user was succefully created'));
-                                            const response: ResponseType = {type: 'userList', success: true};
-                                            connection.write(JSON.stringify(response));
-                                            connection.end();
-                                        }
-                                    });
+                    if (err) {
+                        console.log(chalk.red('There must be a problem'));
+                    } else {
+                        data.forEach((item) => {
+                            if (item === message.user) {
+                                console.log(chalk.red('The user that is going to add already exists'));
+                                const response: ResponseType = {type: 'addUser', success: false};
+                                connection.write(JSON.stringify(response));
+                                connection.end();
+                            } else {
+                                fs.mkdir(`src/notes/${message.user}`, (err) => {
+                                    if (err) {
+                                        console.log(chalk.red('There must be a problem to create the user'));
+                                    } else {
+                                        console.log(chalk.green('The user was succefully created'));
+                                        const response: ResponseType = {type: 'userList', success: true};
+                                        connection.write(JSON.stringify(response));
+                                        connection.end();
                                     }
-                            });
-                        }
-                    });
-
+                                });
+                                }
+                        });
+                    }
+                });
                 break;
             case 'userList':
                 fs.readdir(`src/notes`, (err, data) => {
