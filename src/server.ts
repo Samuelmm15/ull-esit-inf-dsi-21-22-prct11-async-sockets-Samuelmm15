@@ -46,7 +46,6 @@ const server = net.createServer((connection) => {
                         console.log(chalk.red('The file that is trying to add already exists'));
                         const response: ResponseType = {type: 'add', success: false};
                         connection.write(JSON.stringify(response));
-                        connection.end();
                     } else {
                         fs.writeFile(`src/notes/${message.user}/${message.title}.json`, JSON.stringify(object), (err) => {
                             if (err) {
@@ -55,7 +54,6 @@ const server = net.createServer((connection) => {
                                 console.log(chalk.green('The file was succesfully created'));
                                 const response: ResponseType = {type: 'add', success: true};
                                 connection.write(JSON.stringify(response));
-                                connection.end();
                             }
                         });
                     }
@@ -63,6 +61,33 @@ const server = net.createServer((connection) => {
                 });
             break;
             case 'list':
+                fs.readdir(`src/notes/${message.user}`, (err, data) => {
+                    if (err) {
+                        console.log(chalk.red('There must be a problem'));
+                    } else {
+                        if (data.length > 0) {
+                            let noteCollection: Note[] = [];
+                            data.forEach((item) => {
+                                fs.readFile(`src/notes/${message.user}/${item}`, (err, readData) => {
+                                    if (err) {
+                                        console.log(chalk.red('There must be a problem to read'));
+                                    } else {
+                                        const object = JSON.parse(readData.toString());
+                                        const newNote = new Note(object.title, object.body, object.colour, message.user);
+                                        noteCollection.push(newNote);
+                                    }
+                                    if (item === data[data.length - 1]) {
+                                        const response = {type: 'list', success: true, notes: noteCollection};
+                                        connection.write(JSON.stringify(response));
+                                    }
+                                });
+                                // En este punto la colleción de notas está vacía
+                            });
+                        } else {
+                            console.log(chalk.red('There is no element in the list'));
+                        }
+                    }
+                });
                 break;
             case 'read':
                 break;

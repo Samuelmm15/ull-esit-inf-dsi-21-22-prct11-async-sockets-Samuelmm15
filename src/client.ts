@@ -19,7 +19,6 @@ type RequestType = {
 const clientConnection = connect({port: 60300});
 const client = new WholeMessage(clientConnection);
 
-console.log(process.argv[2]);
 switch (process.argv[2]) {
     case 'add':
         yargs.command({
@@ -84,7 +83,32 @@ switch (process.argv[2]) {
                 if (typeof argv.user === 'string') {
                     const message: RequestType = {type: 'list', user: argv.user};
                     clientConnection.write(JSON.stringify(message));
-                    clientConnection.end();
+                    clientConnection.on('data', (data) => {
+                        const dataRecieved = JSON.parse(data.toString());
+                        if (dataRecieved.success === true) {
+                            console.log(chalk.green('The list was succefully obtined'));
+                            console.log();
+                            console.log(chalk.grey('Files list: '));
+                            for (let i = 0; i < dataRecieved.notes.length; i++) {
+                                switch (dataRecieved.notes[i].colour) {
+                                    case 'red':
+                                        console.log(chalk.red(dataRecieved.notes[i].title));
+                                    break;
+                                    case 'green':
+                                        console.log(chalk.green(dataRecieved.notes[i].title));
+                                    break;
+                                    case 'blue':
+                                        console.log(chalk.blue(dataRecieved.notes[i].title));
+                                    break;
+                                    case 'yellow':
+                                        console.log(chalk.yellow(dataRecieved.notes[i].title));
+                                    break;
+                                }
+                            }
+                        } else {
+                            console.log(chalk.red('There was a problem to obtain the list.'));
+                        }
+                    });
                 }
             },
         });
