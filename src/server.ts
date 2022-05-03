@@ -23,6 +23,7 @@ type ResponseType = {
     type: 'add' | 'modify' | 'remove' | 'read' | 'list' | 'addUser' | 'userList';
     success: boolean;
     notes?: Note[];
+    users?: string[];
 }
 
 const server = net.createServer((connection) => {
@@ -167,8 +168,47 @@ const server = net.createServer((connection) => {
                 });
                 break;
             case 'addUser':
+                fs.readdir(`src/notes`, (err, data) => {
+                    if (err) {
+                        console.log(chalk.red('There must be a problem'));
+                    } else {
+                        data.forEach((item) => {
+                            if (item === message.user) {
+                                console.log(chalk.red('The user that is going to add already exists'));
+                                const response: ResponseType = {type: 'addUser', success: false};
+                                connection.write(JSON.stringify(response));
+                            } else {
+                                fs.mkdir(`src/notes/${message.user}`, (err) => {
+                                    if (err) {
+                                        console.log(chalk.red('There must be a problem to create the user'));
+                                    } else {
+                                        console.log(chalk.green('The user was succefully created'));
+                                        const response: ResponseType = {type: 'userList', success: true};
+                                        connection.write(JSON.stringify(response));
+                                    }
+                                });
+                            }
+                        });
+                    }
+                });
                 break;
             case 'userList':
+                fs.readdir(`src/notes`, (err, data) => {
+                    if (err) {
+                        console.log(chalk.red('There must be a problem'));
+                        const response: ResponseType = {type: 'userList', success: false};
+                        connection.write(JSON.stringify(response));
+                    } else {
+                        let userCollection: string[] = [];
+                        data.forEach((item) => {
+                            userCollection.push(item);
+                            if (item === data[data.length - 1]) {
+                                const response: ResponseType = {type: 'userList', success: true, users: userCollection};
+                                connection.write(JSON.stringify(response));
+                            }
+                        });
+                    }
+                });
                 break;
         }
     });

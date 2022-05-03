@@ -255,7 +255,14 @@ switch (process.argv[2]) {
                 if (typeof argv.user === 'string') {
                     const message: RequestType = {type: 'addUser', user: argv.user};
                     clientConnection.write(JSON.stringify(message));
-                    clientConnection.end();
+                    clientConnection.on('data', (data) => {
+                        const dataRecieved = JSON.parse(data.toString());
+                        if (dataRecieved.success === true) {
+                            console.log(chalk.green('The user was succefully added'));
+                        } else {
+                            console.log(chalk.red('The user already exists'));
+                        }
+                    });
                 }
             },
         });
@@ -268,7 +275,19 @@ switch (process.argv[2]) {
             handler() {
                 const message: RequestType = {type: 'userList'};
                 clientConnection.write(JSON.stringify(message));
-                clientConnection.end();
+                clientConnection.on('data', (data) => {
+                    const dataRecieved = JSON.parse(data.toString());
+                    if (dataRecieved.success === true) {
+                        console.log(chalk.green('The user list was succefully obtained'));
+                        console.log();
+                        console.log(chalk.grey('USER LIST:'));
+                        for (let i = 0; i < dataRecieved.users.length; i++) {
+                            console.log(dataRecieved.users[i]);
+                        }
+                    } else {
+                        console.log(chalk.red('There was a problem to obtain the user list'));
+                    }
+                });
             },
         });
         yargs.parse();
