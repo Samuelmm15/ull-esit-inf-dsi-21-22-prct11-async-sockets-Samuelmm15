@@ -7,7 +7,7 @@
 import chalk from 'chalk';
 import * as net from 'net';
 import yargs from 'yargs';
-import {WholeMessage} from './wholeMessage';
+import {WholeMessage} from './myEventEmitter';
 
 type RequestType = {
     type: 'add' | 'modify' | 'remove' | 'read' | 'list' | 'addUser' | 'userList';
