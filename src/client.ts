@@ -5,7 +5,7 @@
  */
 
 import chalk from 'chalk';
-import {connect} from 'net';
+import * as net from 'net';
 import yargs from 'yargs';
 import {WholeMessage} from './wholeMessage';
 
@@ -17,8 +17,8 @@ type RequestType = {
     colour?: string;
 }
 
-const clientConnection = connect({port: 60300});
-const client = new WholeMessage(clientConnection);
+// const clientConnection = connect({port: 60300});
+const myEventEmitter = new WholeMessage(net.connect({port: 60300}));
 
 switch (process.argv[2]) {
     case 'add':
@@ -54,10 +54,9 @@ switch (process.argv[2]) {
                             (argv.colour === 'yellow') || (argv.colour === 'green')) {
                                 const message: RequestType = {type: 'add', user: argv.user, title: argv.title,
                                     body: argv.body, colour: argv.colour};
-                                clientConnection.write(JSON.stringify(message));
-                                clientConnection.on('data', (data) => {
-                                    const dataRecieved = JSON.parse(data.toString());
-                                    if (dataRecieved.success === true) {
+                                myEventEmitter.writeData(message);
+                                myEventEmitter.on('message', (data) => {
+                                    if (data.success === true) {
                                         console.log(chalk.green('The Note was succefully added'));
                                     } else {
                                         console.log(chalk.red('The Note was not added'));
@@ -83,26 +82,25 @@ switch (process.argv[2]) {
             handler(argv) {
                 if (typeof argv.user === 'string') {
                     const message: RequestType = {type: 'list', user: argv.user};
-                    clientConnection.write(JSON.stringify(message));
-                    clientConnection.on('data', (data) => {
-                        const dataRecieved = JSON.parse(data.toString());
-                        if (dataRecieved.success === true) {
+                    myEventEmitter.writeData(message);
+                    myEventEmitter.on('data', (data) => {
+                        if (data.success === true) {
                             console.log(chalk.green('The list was succefully obtined'));
                             console.log();
                             console.log(chalk.grey('Files list: '));
-                            for (let i = 0; i < dataRecieved.notes.length; i++) {
-                                switch (dataRecieved.notes[i].colour) {
+                            for (let i = 0; i < data.notes.length; i++) {
+                                switch (data.notes[i].colour) {
                                     case 'red':
-                                        console.log(chalk.red(dataRecieved.notes[i].title));
+                                        console.log(chalk.red(data.notes[i].title));
                                     break;
                                     case 'green':
-                                        console.log(chalk.green(dataRecieved.notes[i].title));
+                                        console.log(chalk.green(data.notes[i].title));
                                     break;
                                     case 'blue':
-                                        console.log(chalk.blue(dataRecieved.notes[i].title));
+                                        console.log(chalk.blue(data.notes[i].title));
                                     break;
                                     case 'yellow':
-                                        console.log(chalk.yellow(dataRecieved.notes[i].title));
+                                        console.log(chalk.yellow(data.notes[i].title));
                                     break;
                                 }
                             }
@@ -134,29 +132,28 @@ switch (process.argv[2]) {
             handler(argv) {
                 if ((typeof argv.user === 'string') && (typeof argv.title === 'string')) {
                     const message: RequestType = {type: 'read', user: argv.user, title: argv.title};
-                    clientConnection.write(JSON.stringify(message));
-                    clientConnection.on('data', (data) => {
-                        const dataRecieved = JSON.parse(data.toString());
-                        if (dataRecieved.success === true) {
+                    myEventEmitter.writeData(message);
+                    myEventEmitter.on('message', (data) => {
+                        if (data.success === true) {
                             console.log(chalk.green('The specified file was succefully readed'));
                             console.log();
-                            for (let i = 0; i < dataRecieved.notes.length; i++) {
-                                switch (dataRecieved.notes[i].colour) {
+                            for (let i = 0; i < data.notes.length; i++) {
+                                switch (data.notes[i].colour) {
                                     case 'red':
-                                        console.log(`${dataRecieved.notes[i].title}:`);
-                                        console.log(chalk.red(dataRecieved.notes[i].body));
+                                        console.log(`${data.notes[i].title}:`);
+                                        console.log(chalk.red(data.notes[i].body));
                                     break;
                                     case 'green':
-                                        console.log(`${dataRecieved.notes[i].title}:`);
-                                        console.log(chalk.green(dataRecieved.notes[i].body));
+                                        console.log(`${data.notes[i].title}:`);
+                                        console.log(chalk.green(data.notes[i].body));
                                     break;
                                     case 'blue':
-                                        console.log(`${dataRecieved.notes[i].title}:`);
-                                        console.log(chalk.blue(dataRecieved.notes[i].body));
+                                        console.log(`${data.notes[i].title}:`);
+                                        console.log(chalk.blue(data.notes[i].body));
                                     break;
                                     case 'yellow':
-                                        console.log(`${dataRecieved.notes[i].title}:`);
-                                        console.log(chalk.yellow(dataRecieved.notes[i].body));
+                                        console.log(`${data.notes[i].title}:`);
+                                        console.log(chalk.yellow(data.notes[i].body));
                                     break;
                                 }
                             }
@@ -188,10 +185,9 @@ switch (process.argv[2]) {
             handler(argv) {
                 if ((typeof argv.user === 'string') && (typeof argv.title === 'string')) {
                     const message: RequestType = {type: 'remove', user: argv.user, title: argv.title};
-                    clientConnection.write(JSON.stringify(message));
-                    clientConnection.on('data', (data) => {
-                        const dataRecieved = JSON.parse(data.toString());
-                        if (dataRecieved.success === true) {
+                    myEventEmitter.writeData(message);
+                    myEventEmitter.on('message', (data) => {
+                        if (data.success === true) {
                             console.log(chalk.green('The file was succefully removed'));
                         } else {
                             console.log(chalk.red('The file does not exists'));
@@ -226,10 +222,9 @@ switch (process.argv[2]) {
             handler(argv) {
                 if ((typeof argv.user === 'string') && (typeof argv.title === 'string') && (typeof argv.body === 'string')) {
                     const message: RequestType = {type: 'modify', user: argv.user, title: argv.title, body: argv.body};
-                    clientConnection.write(JSON.stringify(message));
-                    clientConnection.on('data', (data) => {
-                        const dataRecieved = JSON.parse(data.toString());
-                        if (dataRecieved.success === true) {
+                    myEventEmitter.writeData(message);
+                    myEventEmitter.on('message', (data) => {
+                        if (data.success === true) {
                             console.log(chalk.green('The File was succefully modificated'));
                         } else {
                             console.log(chalk.red('The introduced File does no exists'));
@@ -254,11 +249,9 @@ switch (process.argv[2]) {
             handler(argv) {
                 if (typeof argv.user === 'string') {
                     const message: RequestType = {type: 'addUser', user: argv.user};
-                    clientConnection.write(JSON.stringify(message));
-                    clientConnection.emit('finish');
-                    clientConnection.on('data', (data) => {
-                        const dataRecieved = JSON.parse(data.toString());
-                        if (dataRecieved.success === true) {
+                    myEventEmitter.writeData(message);
+                    myEventEmitter.on('message', (data) => {
+                        if (data.success === true) {
                             console.log(chalk.green('The user was succefully added'));
                         } else {
                             console.log(chalk.red('The user already exists'));
@@ -275,15 +268,14 @@ switch (process.argv[2]) {
             describe: 'List the user directorys',
             handler() {
                 const message: RequestType = {type: 'userList'};
-                clientConnection.write(JSON.stringify(message));
-                clientConnection.on('data', (data) => {
-                    const dataRecieved = JSON.parse(data.toString());
-                    if (dataRecieved.success === true) {
+                myEventEmitter.writeData(message);
+                myEventEmitter.on('message', (data) => {
+                    if (data.success === true) {
                         console.log(chalk.green('The user list was succefully obtained'));
                         console.log();
                         console.log(chalk.grey('USER LIST:'));
-                        for (let i = 0; i < dataRecieved.users.length; i++) {
-                            console.log(dataRecieved.users[i]);
+                        for (let i = 0; i < data.users.length; i++) {
+                            console.log(data.users[i]);
                         }
                     } else {
                         console.log(chalk.red('There was a problem to obtain the user list'));
@@ -294,8 +286,4 @@ switch (process.argv[2]) {
         yargs.parse();
         break;
 }
-
-// client.on('message', (message) => {
-//     console.log(message);
-// });
 

@@ -1,12 +1,23 @@
 /* eslint-disable indent */
 import {EventEmitter} from 'events';
+import * as net from 'net';
+
+type RequestType = {
+    type: 'add' | 'modify' | 'remove' | 'read' | 'list' | 'addUser' | 'userList';
+    user?: string;
+    title?: string;
+    body?: string;
+    colour?: string;
+}
 
 export class WholeMessage extends EventEmitter {
-    constructor(connection: EventEmitter) {
+    constructor(public connection: net.Socket) {
         super();
-
+    }
+    public writeData(message: RequestType) {
+        this.connection.write(`${JSON.stringify(message)}\n`);
         let wholeData = '';
-        connection.on('data', (dataChunk) => {
+        this.connection.on('data', (dataChunk) => { // This reads the server sended data
             wholeData += dataChunk;
 
             let messageLimit = wholeData.indexOf('\n');
@@ -19,4 +30,5 @@ export class WholeMessage extends EventEmitter {
         });
     }
 }
+
 
