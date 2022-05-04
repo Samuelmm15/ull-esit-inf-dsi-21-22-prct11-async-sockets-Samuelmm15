@@ -51,15 +51,15 @@ switch (process.argv[2]) {
                 if ((typeof argv.title === 'string') && (typeof argv.user === 'string') &&
                     (typeof argv.body === 'string') && (typeof argv.colour === 'string')) {
                         if ((argv.colour === 'red') || (argv.colour === 'blue') ||
-                            (argv.colour === 'yellow') || (argv.colour === 'green')) {
+                            (argv.colour === 'yellow') || (argv.colour === 'green')) { // TENER EN CUENTA SI FALLA EL COLOR
                                 const message: RequestType = {type: 'add', user: argv.user, title: argv.title,
                                     body: argv.body, colour: argv.colour};
                                 myEventEmitter.writeData(message);
                                 myEventEmitter.on('message', (data) => {
                                     if (data.success === true) {
-                                        console.log(chalk.green('The Note was succefully added'));
+                                        console.log(chalk.green('The Note was succefully added.'));
                                     } else {
-                                        console.log(chalk.red('The Note was not added'));
+                                        console.log(chalk.red('There must be a problem to add the Note, please try again.'));
                                     }
                                 });
                         }
@@ -83,9 +83,9 @@ switch (process.argv[2]) {
                 if (typeof argv.user === 'string') {
                     const message: RequestType = {type: 'list', user: argv.user};
                     myEventEmitter.writeData(message);
-                    myEventEmitter.on('data', (data) => {
+                    myEventEmitter.on('message', (data) => {
                         if (data.success === true) {
-                            console.log(chalk.green('The list was succefully obtined'));
+                            console.log(chalk.green('The list was succefully obtined.'));
                             console.log();
                             console.log(chalk.grey('Files list: '));
                             for (let i = 0; i < data.notes.length; i++) {
@@ -105,7 +105,7 @@ switch (process.argv[2]) {
                                 }
                             }
                         } else {
-                            console.log(chalk.red('There was a problem to obtain the list.'));
+                            console.log(chalk.red('There must be a problem to obtain the list, please try again.'));
                         }
                     });
                 }
@@ -135,7 +135,7 @@ switch (process.argv[2]) {
                     myEventEmitter.writeData(message);
                     myEventEmitter.on('message', (data) => {
                         if (data.success === true) {
-                            console.log(chalk.green('The specified file was succefully readed'));
+                            console.log(chalk.green('The specified Note was succefully readed.'));
                             console.log();
                             for (let i = 0; i < data.notes.length; i++) {
                                 switch (data.notes[i].colour) {
@@ -158,7 +158,7 @@ switch (process.argv[2]) {
                                 }
                             }
                         } else {
-                            console.log(chalk.red('There was a problem to read the specified file'));
+                            console.log(chalk.red('There was a problem to read the specified Note, please try again.'));
                         }
                     });
                 }
@@ -188,9 +188,9 @@ switch (process.argv[2]) {
                     myEventEmitter.writeData(message);
                     myEventEmitter.on('message', (data) => {
                         if (data.success === true) {
-                            console.log(chalk.green('The file was succefully removed'));
+                            console.log(chalk.green('The Note was succefully removed.'));
                         } else {
-                            console.log(chalk.red('The file does not exists'));
+                            console.log(chalk.red('There was a problem to remove the Note, please try again.'));
                         }
                     });
                 }
@@ -225,9 +225,9 @@ switch (process.argv[2]) {
                     myEventEmitter.writeData(message);
                     myEventEmitter.on('message', (data) => {
                         if (data.success === true) {
-                            console.log(chalk.green('The File was succefully modificated'));
+                            console.log(chalk.green('The Note was succefully modificated.'));
                         } else {
-                            console.log(chalk.red('The introduced File does no exists'));
+                            console.log(chalk.red('There was a problem to modify the Note, please try again.'));
                         }
                     });
                 }
@@ -252,9 +252,9 @@ switch (process.argv[2]) {
                     myEventEmitter.writeData(message);
                     myEventEmitter.on('message', (data) => {
                         if (data.success === true) {
-                            console.log(chalk.green('The user was succefully added'));
+                            console.log(chalk.green('The user was succefully added.'));
                         } else {
-                            console.log(chalk.red('The user already exists'));
+                            console.log(chalk.red('The user already exists.'));
                         }
                     });
                 }
@@ -271,14 +271,14 @@ switch (process.argv[2]) {
                 myEventEmitter.writeData(message);
                 myEventEmitter.on('message', (data) => {
                     if (data.success === true) {
-                        console.log(chalk.green('The user list was succefully obtained'));
+                        console.log(chalk.green('The user list was succefully obtained.'));
                         console.log();
                         console.log(chalk.grey('USER LIST:'));
                         for (let i = 0; i < data.users.length; i++) {
                             console.log(data.users[i]);
                         }
                     } else {
-                        console.log(chalk.red('There was a problem to obtain the user list'));
+                        console.log(chalk.red('There was a problem to obtain the user list, please try again.'));
                     }
                 });
             },
