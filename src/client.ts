@@ -47,7 +47,7 @@ switch (process.argv[2]) {
         if ((typeof argv.title === 'string') && (typeof argv.user === 'string') &&
                     (typeof argv.body === 'string') && (typeof argv.colour === 'string')) {
           if ((argv.colour === 'red') || (argv.colour === 'blue') ||
-                            (argv.colour === 'yellow') || (argv.colour === 'green')) { // TENER EN CUENTA SI FALLA EL COLOR
+                            (argv.colour === 'yellow') || (argv.colour === 'green')) {
             const message: RequestType = {type: 'add', user: argv.user, title: argv.title,
               body: argv.body, colour: argv.colour};
             myEventEmitter.writeData(message);
