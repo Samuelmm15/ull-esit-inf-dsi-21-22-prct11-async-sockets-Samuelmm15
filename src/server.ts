@@ -25,23 +25,51 @@ const server = net.createServer({allowHalfOpen: true}, (connection) => {
       switch (message.type) {
         case 'add':
           optionFunctions.addFunction(message, connection, (_, undefined) => {});
+          connection.on('finished', (response) => {
+            connection.write(`${JSON.stringify(response)}\n`);
+            connection.end();
+          });
           break;
         case 'list':
-          optionFunctions.listFunction(message, connection);
+          optionFunctions.listFunction(message, connection, (_, undefined) => {});
+          connection.on('finished', (response) => {
+            connection.write(`${JSON.stringify(response)}\n`);
+            connection.end();
+          });
           break;
         case 'read':
-          optionFunctions.readFunction(message, connection);
+          optionFunctions.readFunction(message, connection, (_, undefined) => {});
+          connection.on('finished', (response) => {
+            connection.write(`${JSON.stringify(response)}\n`);
+            connection.end();
+          });
           break;
         case 'remove':
-          optionFunctions.removeFunction(message, connection);
+          optionFunctions.removeFunction(message, connection, (_, undefined) => {});
+          connection.on('finished', (response) => {
+            connection.write(`${JSON.stringify(response)}\n`);
+            connection.end();
+          });
         case 'modify':
-          optionFunctions.modifyFunction(message, connection);
+          optionFunctions.modifyFunction(message, connection, (_, undefined) => {});
+          connection.on('finished', (response) => {
+            connection.write(`${JSON.stringify(response)}\n`);
+            connection.end();
+          });
           break;
         case 'addUser':
-          optionFunctions.addUserFunction(message, connection);
+          optionFunctions.addUserFunction(message, connection, (_, undefined) => {});
+          connection.on('finished', (response) => {
+            connection.write(`${JSON.stringify(response)}\n`);
+            connection.end();
+          });
           break;
         case 'userList':
-          optionFunctions.userListFunction(message, connection);
+          optionFunctions.userListFunction(message, connection, (_, undefined) => {});
+          connection.on('finished', (response) => {
+            connection.write(`${JSON.stringify(response)}\n`);
+            connection.end();
+          });
           break;
       }
     }
