@@ -959,7 +959,7 @@ The list was succefully sended.
 
 Esto se puede observar en la imagen adjunta a continuación:
 
-[IMAGEN]
+![coverage-image](https://user-images.githubusercontent.com/72341631/167204109-939fce49-ab5b-492d-b021-98aa1660eb32.png)
 
 Como se puede ver en la imagen, existe un error tras la ejecución del cubrimiento de código en este caso, este error se refiere a que se emplea muchas veces el uso del `done()` durante el desarrollo de las pruebas, no alcanzo personalmente a comprender el por qué de este error, pero cabe a destacarlo.
 
