@@ -159,12 +159,12 @@ export class ServerFunction {
     fs.unlink(`src/notes/${message.user}/${message.title}.json`, (err) => {
       if (err) {
         console.log(chalk.red('There must be a problem to remove.'));
-        const response: ResponseType = {type: 'read', success: false};
+        const response: ResponseType = {type: 'remove', success: false};
         callback('ERROR', response);
         connection.emit('finished', response);
       } else {
         console.log(chalk.green('The note was succefully removed.'));
-        const response: ResponseType = {type: 'read', success: true};
+        const response: ResponseType = {type: 'remove', success: true};
         callback(undefined, response);
         connection.emit('finished', response);
       }
@@ -250,7 +250,7 @@ export class ServerFunction {
                 connection.emit('finished', response);
               } else {
                 console.log(chalk.green('The user was succefully created.'));
-                const response: ResponseType = {type: 'userList', success: true};
+                const response: ResponseType = {type: 'addUser', success: true};
                 callback(undefined, response);
                 connection.emit('finished', response);
               }
