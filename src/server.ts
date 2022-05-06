@@ -3,7 +3,7 @@
 import {ServerFunction} from './serverFunctions';
 import * as net from 'net';
 
-const server = net.createServer((connection) => {
+const server = net.createServer({allowHalfOpen: true}, (connection) => {
   console.log('A client has connected');
 
   const optionFunctions = new ServerFunction();
