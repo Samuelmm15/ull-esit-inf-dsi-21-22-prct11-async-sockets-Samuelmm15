@@ -23,7 +23,7 @@ export class ServerFunction {
    * @param message Consists in the message from the client.
    * @param connection Consists in the established socket from client to server.
    */
-  public addFunction(message: any, connection: net.Socket) {
+  public addFunction(message: any, connection: net.Socket, callback: (err: string | undefined, data: ResponseType | undefined) => void) {
     const object = new Note(message.title, message.body, message.colour, message.user);
     fs.readdir(`src/notes/${message.user}`, (err, data) => {
       if (err) {
@@ -31,6 +31,7 @@ export class ServerFunction {
         const response: ResponseType = {type: 'add', success: false};
         connection.write(`${JSON.stringify(response)}\n`);
         connection.end();
+        callback('ERROR', response);
       } else {
         let flag: number = 1;
         data.forEach((item) => {
@@ -43,6 +44,7 @@ export class ServerFunction {
           const response: ResponseType = {type: 'add', success: false};
           connection.write(`${JSON.stringify(response)}\n`);
           connection.end();
+          callback('ERROR', response);
         } else {
           fs.writeFile(`src/notes/${message.user}/${message.title}.json`, JSON.stringify(object), (err) => {
             if (err) {
@@ -50,11 +52,13 @@ export class ServerFunction {
               const response: ResponseType = {type: 'add', success: false};
               connection.write(`${JSON.stringify(response)}\n`);
               connection.end();
+              callback('ERROR', response);
             } else {
               console.log(chalk.green('The file was succesfully created.'));
               const response: ResponseType = {type: 'add', success: true};
               connection.write(`${JSON.stringify(response)}\n`);
               connection.end();
+              callback(undefined, response);
             }
           });
         }

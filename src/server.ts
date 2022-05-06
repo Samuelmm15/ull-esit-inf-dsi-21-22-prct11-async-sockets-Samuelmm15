@@ -24,7 +24,7 @@ const server = net.createServer({allowHalfOpen: true}, (connection) => {
       const message = JSON.parse(auxiliaryMessage);
       switch (message.type) {
         case 'add':
-          optionFunctions.addFunction(message, connection);
+          optionFunctions.addFunction(message, connection, (_, undefined) => {});
           break;
         case 'list':
           optionFunctions.listFunction(message, connection);
