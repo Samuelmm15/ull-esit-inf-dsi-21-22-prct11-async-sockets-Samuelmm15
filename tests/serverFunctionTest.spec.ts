@@ -207,16 +207,16 @@ describe('ServerFunction class tests', () => {
   });
 });
 
-describe('ServerFunction class tests', () => {
-  const socket = new net.Socket();
-  it('userListFunction() method test 1', (done) => {
-    const insertedMessage: RequestType = {type: 'userList'};
-    optionFunctions.userListFunction(insertedMessage, socket, (_, data) => {
-      if (data) {
-        expect(data.type).to.be.equal('userList');
-        expect(data.success).to.be.equal(true);
-        done();
-      }
-    });
-  });
-});
+// describe('ServerFunction class tests', () => {
+//   const socket = new net.Socket();
+//   it('userListFunction() method test 1', (done) => {
+//     const insertedMessage: RequestType = {type: 'userList'};
+//     optionFunctions.userListFunction(insertedMessage, socket, (_, data) => {
+//       if (data) {
+//         expect(data.type).to.be.equal('userList');
+//         expect(data.success).to.be.equal(true);
+//         done();
+//       }
+//     });
+//   });
+// });
