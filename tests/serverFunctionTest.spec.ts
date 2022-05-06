@@ -56,3 +56,61 @@ describe('ServerFunction class tests', () => {
     });
   });
 });
+
+describe('ServerFunction class tests', () => {
+  const socket = new net.Socket();
+  it('listFunction() method test 1', (done) => {
+    const insertedMessage: RequestType = {type: 'list', user: 'Samuel'};
+    optionFunctions.listFunction(insertedMessage, socket, (_, data) => {
+      if (data) {
+        expect(data.type).to.be.equal('list');
+        expect(data.success).to.be.equal(true);
+        done();
+      }
+    });
+  }),
+  it('listFunction() method test 2', (done) => {
+    const insertedMessage: RequestType = {type: 'list', user: 'Pepe'};
+    optionFunctions.listFunction(insertedMessage, socket, (_, data) => {
+      if (data) {
+        expect(data.type).to.be.equal('list');
+        expect(data.success).to.be.equal(false);
+        done();
+      }
+    });
+  });
+});
+
+describe('ServerFunction class tests', () => {
+  const socket = new net.Socket();
+  it('readFunction() method test 1', (done) => {
+    const insertedMessage: RequestType = {type: 'list', user: 'Samuel', title: 'newNote1'};
+    optionFunctions.readFunction(insertedMessage, socket, (_, data) => {
+      if (data) {
+        expect(data.type).to.be.equal('read');
+        expect(data.success).to.be.equal(true);
+        done();
+      }
+    });
+  });
+  it('readFunction() method test 2', (done) => {
+    const insertedMessage: RequestType = {type: 'list', user: 'Eduardo', title: 'newNote1'};
+    optionFunctions.readFunction(insertedMessage, socket, (_, data) => {
+      if (data) {
+        expect(data.type).to.be.equal('read');
+        expect(data.success).to.be.equal(false);
+        done();
+      }
+    });
+  });
+  it('readFunction() method test 3', (done) => {
+    const insertedMessage: RequestType = {type: 'list', user: 'Samuel', title: 'newNote'};
+    optionFunctions.readFunction(insertedMessage, socket, (_, data) => {
+      if (data) {
+        expect(data.type).to.be.equal('read');
+        expect(data.success).to.be.equal(false);
+        done();
+      }
+    });
+  });
+});
