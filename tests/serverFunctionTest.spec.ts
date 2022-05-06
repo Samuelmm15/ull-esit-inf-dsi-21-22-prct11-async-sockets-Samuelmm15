@@ -14,10 +14,39 @@ type RequestType = {
 const optionFunctions = new ServerFunction();
 
 describe('ServerFunction class tests', () => {
-  it('addFunction() method test', (done) => {
+  const socket = new net.Socket();
+  it('addFunction() method test 1', (done) => {
     const insertedMessage: RequestType = {type: 'add', user: 'Samuel', title: 'newNote1', body: 'This is a test', colour: 'red'};
-    // const message = JSON.parse(insertedMessage.toString());
-    const socket = new net.Socket();
+    optionFunctions.addFunction(insertedMessage, socket, (_, data) => {
+      if (data) {
+        expect(data.type).to.be.equal('add');
+        expect(data.success).to.be.equal(true);
+        done();
+      }
+    });
+  }),
+  it('addFunction() method test 2', (done) => {
+    const insertedMessage: RequestType = {type: 'add', user: 'Samuel', title: 'newNote1', body: 'This is a test', colour: 'red'};
+    optionFunctions.addFunction(insertedMessage, socket, (_, data) => {
+      if (data) {
+        expect(data.type).to.be.equal('add');
+        expect(data.success).to.be.equal(false);
+        done();
+      }
+    });
+  }),
+  it('addFunction() method test 3', (done) => {
+    const insertedMessage: RequestType = {type: 'add', user: 'Samue', title: 'newNote1', body: 'This is a test', colour: 'red'};
+    optionFunctions.addFunction(insertedMessage, socket, (_, data) => {
+      if (data) {
+        expect(data.type).to.be.equal('add');
+        expect(data.success).to.be.equal(false);
+        done();
+      }
+    });
+  }),
+  it('addFunction() method test 4', (done) => {
+    const insertedMessage: RequestType = {type: 'add', user: 'Samuel', title: 'newNote2', body: 'This is a test 2', colour: 'yellow'};
     optionFunctions.addFunction(insertedMessage, socket, (_, data) => {
       if (data) {
         expect(data.type).to.be.equal('add');
