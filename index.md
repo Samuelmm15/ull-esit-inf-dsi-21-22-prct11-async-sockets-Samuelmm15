@@ -11,17 +11,17 @@
 
 Para comenzar con esta undécima práctica de la asignatura `Desarrollo de Sistemas Informáticos` se indican una serie de documentos que permiten conocer un poco más sobre el funcionamiento de ciertas librerías, métodos, etc, que van a ser usados para el correcto desarrollo de dicha práctica.
 
-El primero de estos documentos es el módulo `net` de [Node.js](https://nodejs.org/dist/latest-v18.x/docs/api/net.html). Este, permite crear servidores y clientes, que, ha su vez, hacen uso de `Sockets` para poder comunicarse entre ellos.
+El primero de estos documentos es el módulo `net` de [Node.js](https://nodejs.org/dist/latest-v18.x/docs/api/net.html). Este, permite crear servidores y clientes, que, a su vez, hacen uso de `Sockets` para poder comunicarse entre ellos.
 
 Por otro lado, se tiene la clase `EventEmitter` del módulo `events` de [Node.js](https://nodejs.org/dist/latest-v18.x/docs/api/events.html#events_class_eventemitter). Esta clase, permite escuchar eventos y asignar ciertas acciones para ejecutar cuando se producen dichos eventos, pero, como se puede obervar, no se hace uso del socket para comunicarse con el servidor o el cliente, sino que se encarga de gestionar los eventos que se producen en dicho socket y añadir ciertas acciones necesarias cuando se produce un evento determinado.
 
-Para finalizar, se sigue haciendo uso de los paquetes [yargs](https://www.npmjs.com/package/yargs) y [chalk](https://www.npmjs.com/package/chalk) para la gestión de la línea de comandos en el caso del paquete `yargs`, y, por otro lado para mostrar por pantalla mensajes con distintos aspectos y colores, en el caso de `chalk`.
+Para finalizar, se sigue haciendo uso de los paquetes [yargs](https://www.npmjs.com/package/yargs) y [chalk](https://www.npmjs.com/package/chalk). Para la gestión de la línea de comandos en el caso del paquete `yargs`, y, por otro lado para mostrar por pantalla mensajes con distintos aspectos y colores, en el caso de `chalk`.
 
 ## // Descripción de la aplicación <a name="id2"></a>
 
 Para esta undécima práctica de la asignatura se solicita una aplicación de notas implantada en un servidor, y que, haciendo uso de un cliente permita que a través de la línea de comandos pueda realizar las mismas operaciones que para las usadas en la **Práctica 9** de la asignatura.
 
-Para comenzar, se tiene la parte del servidor. En este, debe de ser implantado el funcionamiento base de la aplicación de notas original, es decir, en el servidor, todos los mensajes que sean recibidos de parte del cliente, deben de ser gestionados por este, de manera que permita realizar las operaciones que has sido solicitadas de manera física.
+Para comenzar, se tiene la parte del servidor. En este, debe de ser implantado el funcionamiento base de la aplicación de notas original, es decir, en el servidor, todos los mensajes que sean recibidos de parte del cliente, deben de ser gestionados por este, de manera que permita realizar las operaciones que han sido solicitadas de manera física.
 
 En primer lugar, todos los mensajes recibidos por parte del cliente, van a ser gestionados de la siguiente manera:
 
@@ -40,7 +40,7 @@ En primer lugar, todos los mensajes recibidos por parte del cliente, van a ser g
       flag = 1;
 ```
 
-Como se puede observar anteriormente, todos los mensajes recibidos por parte del cliente, van a ser comprobados si han sido enviados de manera completa. En el caso, que alguno de los mensajes enviados se encuentre dividido en distintas partes, se realiza una concatenación del mensaje hasta el momento en el que se encuentre `\n`, con este indicador, se identifica el final del mensaje, por tanto el mensaje enviado ha sido totalmente recibido. Una vez se tiene todo esto comentado anteriormente, se activa el *flag* a *1* y se comienza con la comprobación del tipo de operación que ha sido solicitada por el cliente.
+Como se puede observar anteriormente, todos los mensajes recibidos por parte del cliente, van a ser comprobados si han sido enviados de manera completa. En el caso que, alguno de los mensajes enviados se encuentre dividido en distintas partes, se realiza una concatenación del mensaje hasta el momento en el que se encuentre `\n`, con este indicador, se identifica el final del mensaje, por tanto el mensaje enviado ha sido totalmente recibido. Una vez se tiene todo esto comentado anteriormente, se activa el *flag* a *1* y se comienza con la comprobación del tipo de operación que ha sido solicitada por el cliente.
 
 La primera de estas operaciones es la de añadir una nueva nota al directorio de cierto usuario, para ello, se hace uso de la siguiente implementación:
 
@@ -131,7 +131,7 @@ public listFunction(message: any, connection: net.Socket, callback: (err: string
   }
 ```
 
-Como se puede ver en el código adjunto anteriormente, por cada uno de los elementos que son obtenidos del directorio del usuario, estos, son añadidos a una colección que, cuando se produce que el directorio ya no contiene nuevos elementos los cuales pertenecen a la lista. Dicha colección es añadida al mensaje que finalmente será envíado a través del socket para que el cliente pueda aplicar las operaciones necesarias para obtener dicha lista y mostrarla directamente al cliente final.
+Como se puede ver en el código adjunto anteriormente, por cada uno de los elementos que son obtenidos del directorio del usuario, estos, son añadidos a una colección que, cuando se produce que el directorio ya no contiene nuevos elementos los cuales pertenecen a la lista, dicha colección es añadida al mensaje que finalmente será envíado a través del socket para que el cliente pueda aplicar las operaciones necesarias para obtener dicha lista y mostrarla directamente al cliente final.
 
 A continuación, se implementa la operación de lectura, que, funciona de manera similar a la operación de listado de un directorio en concreto, pero, hay que tener en cuenta que, para este caso, se transmite un único elemento concreto de la lista, el cual, en la parte del cliente será tratado de tal manera que permita mostrar el contenido de la nota por consola.
 
@@ -649,7 +649,7 @@ public userListOption(myEventEmitter: MyEventEmitter) {
 
 ## // Testeo y Pruebas <a name="id3"></a>
 
-Para el testeo del código desarrollado anteriormente, se hace uso del patrón callback, para poder realizar el testeo de los métodos desarrollados para las opciones por parte del servidor, dicho método para poder realizar las pruebas no ha sido empleado para los métodos de la parte del cliente, ya que, el cliente hace uso de un paquete especial llamado `yargs`. Este paquete, se encarga de administrar los comandos introducidos por la terminal, por tanto, para el testeo de dicha parte del código desarrollado, no es posible, debido a que no se pueden realizar pruebas dinámicas que requieran que el usuario introduzca los valores por teclado cada vez que el fichero que contenga la prueba sea ejecutado.
+Para el testeo del código desarrollado anteriormente, se hace uso del patrón callback, para poder realizar el testeo de los métodos desarrollados para las opciones por parte del servidor, dicho método no ha sido empleado para los métodos de la parte del cliente, ya que, el cliente hace uso de un paquete especial llamado `yargs`. Este paquete, se encarga de administrar los comandos introducidos por la terminal, por tanto, para el testeo de dicha parte del código desarrollado, no es posible, debido a que no se pueden realizar pruebas dinámicas que requieran que el usuario introduzca los valores por teclado cada vez que el fichero que contenga la prueba sea ejecutado.
 
 Como se puede observar en el fichero `serverFunctionTest.spec.ts`, se han desarrollado cada uno de los testeos necesarios para la correcta comprobación del código, de manera que, por cada una de las opciones de la aplicación de notas, se han realizado una serie de pruebas útiles para comprobar si realmente el código desarrollado es válido.
 
